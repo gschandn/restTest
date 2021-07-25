@@ -3,15 +3,12 @@ package co.bench.restTest.service;
 import co.bench.restTest.datasource.TransactionDataSource;
 import co.bench.restTest.datasource.dto.TransactionAmountWrapper;
 import co.bench.restTest.model.TransactionAmount;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 public class TransactionService {
@@ -21,23 +18,25 @@ public class TransactionService {
         this.dataSource = dataSource;
     }
 
-    public List<TransactionAmount> getRunningBalances() {
+    public void printRunningBalances() {
         Map<LocalDate, BigDecimal> dailyTransactionAmounts = this.getDailyTransactionAmounts();
         List<LocalDate> dates = new ArrayList(dailyTransactionAmounts.keySet());
-        List<TransactionAmount> runningBalances = new ArrayList<>();
         Collections.sort(dates);
+
+        // update dailyTransactionAmounts in-place to contain running balance
+        // printing the date and running balance also occurs in this loop
         for(int i=0; i<dates.size(); i++){
             LocalDate currentKey = dates.get(i);
             BigDecimal currentBalance = dailyTransactionAmounts.get(currentKey);
-            if(i>0){
+            BigDecimal runningBalance = currentBalance;
+            if(i > 0){
                 LocalDate previousKey = dates.get(i-1);
-                currentBalance = currentBalance.add(dailyTransactionAmounts.get(previousKey)) ;
+                runningBalance = currentBalance.add(dailyTransactionAmounts.get(previousKey));
+                dailyTransactionAmounts.replace(currentKey, runningBalance);
             }
 
-            TransactionAmount runningBalance = new TransactionAmount(currentKey, currentBalance);
-            runningBalances.add(runningBalance);
-        }
-        return runningBalances;
+            System.out.println(currentKey + " " + runningBalance);
+       }
 
     }
 
