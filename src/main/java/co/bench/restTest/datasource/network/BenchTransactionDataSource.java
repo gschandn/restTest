@@ -1,7 +1,7 @@
 package co.bench.restTest.datasource.network;
 
 import co.bench.restTest.datasource.TransactionDataSource;
-import co.bench.restTest.datasource.dto.TransactionAmountWrapper;
+import co.bench.restTest.datasource.dto.TransactionAmountDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.*;
@@ -16,11 +16,11 @@ public class BenchTransactionDataSource implements TransactionDataSource {
   }
 
   @Override
-  public TransactionAmountWrapper getTransactionsByPage(int pageNum) throws RestClientException {
+  public TransactionAmountDto getTransactionsByPage(int pageNum) throws RestClientException {
     // TODO: Clean this up, could just be a hardcoded string right now
     UriComponentsBuilder uriBuilder =
         UriComponentsBuilder.fromHttpUrl(
             "https://resttest.bench.co/transactions/" + pageNum + ".json");
-    return restTemplate.getForObject(uriBuilder.toUriString(), TransactionAmountWrapper.class);
+    return restTemplate.getForObject(uriBuilder.toUriString(), TransactionAmountDto.class);
   }
 }

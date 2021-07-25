@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class TransactionAmountWrapper {
-  public TransactionAmountWrapper() {
+public class TransactionAmountDto {
+  public TransactionAmountDto() {
     this.transactions = new ArrayList<>();
   }
 
-  public TransactionAmountWrapper(int totalCount, int page, List<TransactionAmount> transactions) {
+  public TransactionAmountDto(int totalCount, int page, List<TransactionAmount> transactions) {
     this.totalCount = totalCount;
     this.page = page;
     this.transactions = transactions;
@@ -49,7 +49,7 @@ public class TransactionAmountWrapper {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    TransactionAmountWrapper that = (TransactionAmountWrapper) o;
+    TransactionAmountDto that = (TransactionAmountDto) o;
     return totalCount == that.totalCount
         && page == that.page
         && transactions.equals(that.transactions);

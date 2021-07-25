@@ -1,7 +1,7 @@
 package co.bench.restTest.service;
 
 import co.bench.restTest.datasource.TransactionDataSource;
-import co.bench.restTest.datasource.dto.TransactionAmountWrapper;
+import co.bench.restTest.datasource.dto.TransactionAmountDto;
 import co.bench.restTest.model.TransactionAmount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,20 +41,20 @@ public class TransactionService {
 
   private Map<LocalDate, BigDecimal> _getDailyTransactionAmounts() throws RestClientException {
     Map<LocalDate, BigDecimal> dailyTransactionAmounts = new HashMap<>();
-    TransactionAmountWrapper transactionAmountWrapper;
+    TransactionAmountDto transactionAmountDto;
     int currentPageNum = 1;
 
-    transactionAmountWrapper = dataSource.getTransactionsByPage(currentPageNum);
+    transactionAmountDto = dataSource.getTransactionsByPage(currentPageNum);
     _populateDailyTransactionAmounts(
-        dailyTransactionAmounts, transactionAmountWrapper.getTransactions());
+        dailyTransactionAmounts, transactionAmountDto.getTransactions());
     currentPageNum++;
 
-    int numPages = transactionAmountWrapper.getTotalPages();
+    int numPages = transactionAmountDto.getTotalPages();
 
     while (currentPageNum <= numPages) {
-      transactionAmountWrapper = dataSource.getTransactionsByPage(currentPageNum);
+      transactionAmountDto = dataSource.getTransactionsByPage(currentPageNum);
       _populateDailyTransactionAmounts(
-          dailyTransactionAmounts, transactionAmountWrapper.getTransactions());
+          dailyTransactionAmounts, transactionAmountDto.getTransactions());
       currentPageNum++;
     }
 

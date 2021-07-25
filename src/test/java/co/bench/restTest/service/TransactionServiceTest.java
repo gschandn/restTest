@@ -1,7 +1,7 @@
 package co.bench.restTest.service;
 
 import co.bench.restTest.datasource.TransactionDataSource;
-import co.bench.restTest.datasource.dto.TransactionAmountWrapper;
+import co.bench.restTest.datasource.dto.TransactionAmountDto;
 import co.bench.restTest.model.TransactionAmount;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClientException;
 
@@ -54,10 +53,10 @@ class TransactionServiceTest {
     givenTransactions1.add(givenTransaction3);
     givenTransactions2.add(givenTransaction4);
     givenTransactions2.add(givenTransaction5);
-    TransactionAmountWrapper givenTransactionWrapper1 =
-        new TransactionAmountWrapper(5, 1, givenTransactions1);
-    TransactionAmountWrapper givenTransactionWrapper2 =
-        new TransactionAmountWrapper(5, 2, givenTransactions2);
+    TransactionAmountDto givenTransactionWrapper1 =
+        new TransactionAmountDto(5, 1, givenTransactions1);
+    TransactionAmountDto givenTransactionWrapper2 =
+        new TransactionAmountDto(5, 2, givenTransactions2);
 
     // when
     Mockito.when(mockDataSource.getTransactionsByPage(1)).thenReturn(givenTransactionWrapper1);

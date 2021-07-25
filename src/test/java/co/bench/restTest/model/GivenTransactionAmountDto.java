@@ -6,12 +6,12 @@ import java.util.List;
  * We require custom objects for tests because we want to test conversion of strings to LocalDate
  * and BigDecimal
  */
-public class GivenTransactionAmountWrapper {
+public class GivenTransactionAmountDto {
   private final int totalCount;
   private final int page;
   private final List<GivenTransactionAmount> transactions;
 
-  public GivenTransactionAmountWrapper(
+  public GivenTransactionAmountDto(
       int totalCount, int page, List<GivenTransactionAmount> transactions) {
     this.totalCount = totalCount;
     this.page = page;
