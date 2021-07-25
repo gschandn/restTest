@@ -26,7 +26,6 @@ public class CommandLineTaskExecutor implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        long startTime = System.currentTimeMillis();
         try {
             Map<LocalDate, BigDecimal> runningBalances = transactionService.getRunningBalances();
             List<LocalDate> dates = new ArrayList<>(runningBalances.keySet());
@@ -37,7 +36,5 @@ public class CommandLineTaskExecutor implements CommandLineRunner {
         } catch(RestClientException e) {
             System.out.println("There was an error retrieving the balances. Please call Bench - their product is more reliable.");
         }
-
-        System.out.println("Run Time: " + (System.currentTimeMillis() - startTime));
     }
 }
