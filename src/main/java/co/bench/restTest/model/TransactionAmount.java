@@ -3,6 +3,7 @@ package co.bench.restTest.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -11,9 +12,9 @@ public class TransactionAmount {
     @JsonFormat(pattern="yyyy-MM-dd")
     private final LocalDate date;
     @JsonProperty("Amount")
-    private final Double amount;
+    private final BigDecimal amount;
 
-    public TransactionAmount(LocalDate date, Double amount) {
+    public TransactionAmount(LocalDate date, BigDecimal amount) {
         this.date = date;
         this.amount = amount;
     }
@@ -22,7 +23,7 @@ public class TransactionAmount {
         return date;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 

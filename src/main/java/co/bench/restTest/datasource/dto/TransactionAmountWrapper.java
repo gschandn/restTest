@@ -66,4 +66,11 @@ public class TransactionAmountWrapper {
                 ", transactions=" + transactions +
                 '}';
     }
+
+    public int getTotalPages() throws IllegalArgumentException {
+        if(page != 1){
+            throw new IllegalArgumentException("Can only call getTotalPages on the first page");
+        }
+        return (int)Math.ceil((double)totalCount / transactions.size());
+    }
 }
