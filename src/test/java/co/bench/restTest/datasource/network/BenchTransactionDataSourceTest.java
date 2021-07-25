@@ -29,94 +29,99 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RestClientTest(BenchTransactionDataSource.class)
 @AutoConfigureWebClient(registerRestTemplate = true)
 class BenchTransactionDataSourceTest {
-    @Autowired
-    private BenchTransactionDataSource dataSource;
+  @Autowired private BenchTransactionDataSource dataSource;
 
-    @Autowired
-    private MockRestServiceServer mockServer;
+  @Autowired private MockRestServiceServer mockServer;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @Test
-    @DisplayName("Should calculate correct # of pages and convert strings to LocalDate/BigDecimal with proper data")
-    void receivedCorrectData() throws Exception {
-        List<GivenTransactionAmount> givenTransactions = new ArrayList<>();
-        GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("2013-12-21", "1000");
-        GivenTransactionAmount givenTransaction2 = new GivenTransactionAmount("2013-12-21", "2000.51");
-        givenTransactions.add(givenTransaction1);
-        givenTransactions.add(givenTransaction2);
-        GivenTransactionAmountWrapper givenTransactionWrapper = new GivenTransactionAmountWrapper(3, 1, givenTransactions);
+  @Test
+  @DisplayName(
+      "Should calculate correct # of pages and convert strings to LocalDate/BigDecimal with proper data")
+  void receivedCorrectData() throws Exception {
+    List<GivenTransactionAmount> givenTransactions = new ArrayList<>();
+    GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("2013-12-21", "1000");
+    GivenTransactionAmount givenTransaction2 = new GivenTransactionAmount("2013-12-21", "2000.51");
+    givenTransactions.add(givenTransaction1);
+    givenTransactions.add(givenTransaction2);
+    GivenTransactionAmountWrapper givenTransactionWrapper =
+        new GivenTransactionAmountWrapper(3, 1, givenTransactions);
 
-        List<TransactionAmount> expectedTransactions = new ArrayList<>();
-        TransactionAmount expectedTransaction1 = new TransactionAmount(LocalDate.parse("2013-12-21"), BigDecimal.valueOf(1000));
-        TransactionAmount expectedTransaction2 = new TransactionAmount(LocalDate.parse("2013-12-21"), BigDecimal.valueOf(2000.51));
-        expectedTransactions.add(expectedTransaction1);
-        expectedTransactions.add(expectedTransaction2);
-        TransactionAmountWrapper expectedTransactionWrapper = new TransactionAmountWrapper(3, 1, expectedTransactions);
+    List<TransactionAmount> expectedTransactions = new ArrayList<>();
+    TransactionAmount expectedTransaction1 =
+        new TransactionAmount(LocalDate.parse("2013-12-21"), BigDecimal.valueOf(1000));
+    TransactionAmount expectedTransaction2 =
+        new TransactionAmount(LocalDate.parse("2013-12-21"), BigDecimal.valueOf(2000.51));
+    expectedTransactions.add(expectedTransaction1);
+    expectedTransactions.add(expectedTransaction2);
+    TransactionAmountWrapper expectedTransactionWrapper =
+        new TransactionAmountWrapper(3, 1, expectedTransactions);
 
-        String givenTransaction = objectMapper.writeValueAsString(givenTransactionWrapper);
+    String givenTransaction = objectMapper.writeValueAsString(givenTransactionWrapper);
 
-        mockServer.expect(requestTo("https://resttest.bench.co/transactions/1.json"))
-                .andRespond(withSuccess(givenTransaction, MediaType.APPLICATION_JSON));
+    mockServer
+        .expect(requestTo("https://resttest.bench.co/transactions/1.json"))
+        .andRespond(withSuccess(givenTransaction, MediaType.APPLICATION_JSON));
 
-        TransactionAmountWrapper transactionAmountWrapper = dataSource.getTransactionsByPage(1);
-        Assertions.assertEquals(transactionAmountWrapper.getPage(), 1);
-        Assertions.assertEquals(transactionAmountWrapper.getTotalPages(), 2);
-        Assertions.assertEquals(transactionAmountWrapper, expectedTransactionWrapper);
-    }
+    TransactionAmountWrapper transactionAmountWrapper = dataSource.getTransactionsByPage(1);
+    Assertions.assertEquals(transactionAmountWrapper.getPage(), 1);
+    Assertions.assertEquals(transactionAmountWrapper.getTotalPages(), 2);
+    Assertions.assertEquals(transactionAmountWrapper, expectedTransactionWrapper);
+  }
 
-    @Test
-    @DisplayName("Should throw RestClientException on bad request")
-    void receivedBadRequest() {
-        mockServer.expect(requestTo("https://resttest.bench.co/transactions/1.json"))
-                .andRespond(withBadRequest());
+  @Test
+  @DisplayName("Should throw RestClientException on bad request")
+  void receivedBadRequest() {
+    mockServer
+        .expect(requestTo("https://resttest.bench.co/transactions/1.json"))
+        .andRespond(withBadRequest());
 
-        Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
-    }
+    Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
+  }
 
-    @Test
-    @DisplayName("Should throw RestClientException on 404")
-    void receivedPageNotFound() {
-        mockServer.expect(requestTo("https://resttest.bench.co/transactions/1.json"))
-                .andRespond(withStatus(HttpStatus.NOT_FOUND));
+  @Test
+  @DisplayName("Should throw RestClientException on 404")
+  void receivedPageNotFound() {
+    mockServer
+        .expect(requestTo("https://resttest.bench.co/transactions/1.json"))
+        .andRespond(withStatus(HttpStatus.NOT_FOUND));
 
-        Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
-    }
+    Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
+  }
 
+  @Test
+  @DisplayName("Should throw RestClientException on corrupt date")
+  void receivedCorruptDate() throws Exception {
+    List<GivenTransactionAmount> givenTransactions = new ArrayList<>();
+    GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("20a13-12-21", "1000");
+    givenTransactions.add(givenTransaction1);
+    GivenTransactionAmountWrapper givenTransactionWrapper =
+        new GivenTransactionAmountWrapper(3, 1, givenTransactions);
 
+    String givenTransaction = objectMapper.writeValueAsString(givenTransactionWrapper);
 
+    mockServer
+        .expect(requestTo("https://resttest.bench.co/transactions/1.json"))
+        .andRespond(withSuccess(givenTransaction, MediaType.APPLICATION_JSON));
 
-    @Test
-    @DisplayName("Should throw RestClientException on corrupt date")
-    void receivedCorruptDate() throws Exception {
-        List<GivenTransactionAmount> givenTransactions = new ArrayList<>();
-        GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("20a13-12-21", "1000");
-        givenTransactions.add(givenTransaction1);
-        GivenTransactionAmountWrapper givenTransactionWrapper = new GivenTransactionAmountWrapper(3, 1, givenTransactions);
+    Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
+  }
 
+  @Test
+  @DisplayName("Should throw RestClientException on corrupt amount")
+  void receivedCorruptData() throws Exception {
+    List<GivenTransactionAmount> givenTransactions = new ArrayList<>();
+    GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("20a13-12-21", "1000");
+    givenTransactions.add(givenTransaction1);
+    GivenTransactionAmountWrapper givenTransactionWrapper =
+        new GivenTransactionAmountWrapper(3, 1, givenTransactions);
 
-        String givenTransaction = objectMapper.writeValueAsString(givenTransactionWrapper);
+    String givenTransaction = objectMapper.writeValueAsString(givenTransactionWrapper);
 
-        mockServer.expect(requestTo("https://resttest.bench.co/transactions/1.json"))
-                .andRespond(withSuccess(givenTransaction, MediaType.APPLICATION_JSON));
+    mockServer
+        .expect(requestTo("https://resttest.bench.co/transactions/1.json"))
+        .andRespond(withSuccess(givenTransaction, MediaType.APPLICATION_JSON));
 
-        Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
-    }
-
-    @Test
-    @DisplayName("Should throw RestClientException on corrupt amount")
-    void receivedCorruptData() throws Exception {
-        List<GivenTransactionAmount> givenTransactions = new ArrayList<>();
-        GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("20a13-12-21", "1000");
-        givenTransactions.add(givenTransaction1);
-        GivenTransactionAmountWrapper givenTransactionWrapper = new GivenTransactionAmountWrapper(3, 1, givenTransactions);
-
-        String givenTransaction = objectMapper.writeValueAsString(givenTransactionWrapper);
-
-        mockServer.expect(requestTo("https://resttest.bench.co/transactions/1.json"))
-                .andRespond(withSuccess(givenTransaction, MediaType.APPLICATION_JSON));
-
-        Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
-    }
+    Assertions.assertThrows(RestClientException.class, () -> dataSource.getTransactionsByPage(1));
+  }
 }

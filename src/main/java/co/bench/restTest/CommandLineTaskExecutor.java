@@ -14,27 +14,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-
 @Profile("!test")
 @Component
 public class CommandLineTaskExecutor implements CommandLineRunner {
-    private final TransactionService transactionService;
+  private final TransactionService transactionService;
 
-    public CommandLineTaskExecutor(@Autowired TransactionService transactionService) {
-        this.transactionService = transactionService;
-    }
+  public CommandLineTaskExecutor(@Autowired TransactionService transactionService) {
+    this.transactionService = transactionService;
+  }
 
-    @Override
-    public void run(String... args) {
-        try {
-            Map<LocalDate, BigDecimal> runningBalances = transactionService.getRunningBalances();
-            List<LocalDate> dates = new ArrayList<>(runningBalances.keySet());
-            Collections.sort(dates);
-            for(LocalDate key : dates) {
-                System.out.println(key + " " + runningBalances.get(key));
-            }
-        } catch(RestClientException e) {
-            System.out.println("There was an error retrieving the balances. Please call Bench - their product is more reliable.");
-        }
+  @Override
+  public void run(String... args) {
+    try {
+      Map<LocalDate, BigDecimal> runningBalances = transactionService.getRunningBalances();
+      List<LocalDate> dates = new ArrayList<>(runningBalances.keySet());
+      Collections.sort(dates);
+      for (LocalDate key : dates) {
+        System.out.println(key + " " + runningBalances.get(key));
+      }
+    } catch (RestClientException e) {
+      System.out.println(
+          "There was an error retrieving the balances. Please call Bench - their product is more reliable.");
     }
+  }
 }
