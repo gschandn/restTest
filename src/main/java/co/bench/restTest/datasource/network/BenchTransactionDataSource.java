@@ -16,7 +16,7 @@ public class BenchTransactionDataSource implements TransactionDataSource {
     }
 
     @Override
-    public TransactionAmountWrapper getTransactionsByPage(int pageNum) {
+    public TransactionAmountWrapper getTransactionsByPage(int pageNum) throws RestClientException {
         // TODO: Clean this up, could just be a hardcoded string right now
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("https://resttest.bench.co/transactions/"+pageNum+".json");
         return restTemplate.getForObject(uriBuilder.toUriString(), TransactionAmountWrapper.class);
