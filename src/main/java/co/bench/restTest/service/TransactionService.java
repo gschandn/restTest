@@ -19,14 +19,13 @@ public class TransactionService {
         this.dataSource = dataSource;
     }
 
-    public Map<LocalDate, BigDecimal>  printRunningBalances() throws RestClientException {
-        Map<LocalDate, BigDecimal> dailyTransactionAmounts = getDailyTransactionAmounts();
+    public Map<LocalDate, BigDecimal> getRunningBalances() throws RestClientException {
+        Map<LocalDate, BigDecimal> dailyTransactionAmounts = _getDailyTransactionAmounts();
 
         List<LocalDate> dates = new ArrayList<>(dailyTransactionAmounts.keySet());
         Collections.sort(dates);
 
         // update dailyTransactionAmounts in-place to contain running balance
-        // printing the date and running balance also occurs in this loop
         for(int i=0; i<dates.size(); i++) {
             LocalDate currentKey = dates.get(i);
             BigDecimal currentBalance = dailyTransactionAmounts.get(currentKey);
@@ -41,7 +40,7 @@ public class TransactionService {
 
     }
 
-    public Map<LocalDate, BigDecimal> getDailyTransactionAmounts() throws RestClientException {
+    private Map<LocalDate, BigDecimal> _getDailyTransactionAmounts() throws RestClientException {
         Map<LocalDate, BigDecimal> dailyTransactionAmounts = new HashMap<>();
         TransactionAmountWrapper transactionAmountWrapper;
         int currentPageNum = 1;

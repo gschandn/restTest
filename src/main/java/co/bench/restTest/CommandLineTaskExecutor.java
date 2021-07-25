@@ -28,7 +28,7 @@ public class CommandLineTaskExecutor implements CommandLineRunner {
     public void run(String... args) {
         long startTime = System.currentTimeMillis();
         try {
-            Map<LocalDate, BigDecimal> runningBalances = transactionService.printRunningBalances();
+            Map<LocalDate, BigDecimal> runningBalances = transactionService.getRunningBalances();
             List<LocalDate> dates = new ArrayList<>(runningBalances.keySet());
             Collections.sort(dates);
             for(LocalDate key : dates) {
