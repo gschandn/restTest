@@ -111,7 +111,7 @@ class BenchTransactionDataSourceTest {
   @DisplayName("Should throw RestClientException on corrupt amount")
   void receivedCorruptData() throws Exception {
     List<GivenTransactionAmount> givenTransactions = new ArrayList<>();
-    GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("20a13-12-21", "1000");
+    GivenTransactionAmount givenTransaction1 = new GivenTransactionAmount("2013-12-21", "10X0");
     givenTransactions.add(givenTransaction1);
     GivenTransactionAmountDto givenTransactionWrapper =
         new GivenTransactionAmountDto(3, 1, givenTransactions);
