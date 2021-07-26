@@ -9,6 +9,7 @@
 - If Java 11 is not installed please download and install from https://www.oracle.com/ca-en/java/technologies/javase-jdk11-downloads.html
 - If Git is not installed please download and install from https://git-scm.com/downloads
 - If Gradle is not installed please download and install from https://gradle.org/install/
+
 In a terminal run the following commands:
 ```
 git clone https://github.com/gschandn/restTest.git && cd restTest
@@ -20,6 +21,7 @@ java -jar build/libs/restTest-1.jar
 - If Java 11 is not installed please download and install from https://www.oracle.com/ca-en/java/technologies/javase-jdk11-downloads.html
 - If Git is not installed please download and install from https://git-scm.com/downloads
 
+In a terminal run the following commands:
 ```
 git clone https://github.com/gschandn/restTest.git && cd restTest
 java -jar restTest-1.jar
